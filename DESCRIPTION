@@ -1,10 +1,11 @@
 Package: rod
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Open Data Utility Functions for R (Title Case)
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
+Author: Quentin Stoyel
+Maintainer: Really? <yourself@somewhere.net>
+Description: Set of scripts used to help handle various spatial data
+    resources available on Open Data.  
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
 Encoding: UTF-8
