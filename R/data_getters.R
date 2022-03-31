@@ -14,8 +14,6 @@
 #   Test Package:              'Ctrl + Shift + T'
 
 
-
-
 #' Downloads an open data record
 #'
 #' This is a helper function to download and unzip an open data resource into a
@@ -64,6 +62,49 @@ sf_clean <- function(in_sf, crop_sf, crs) {
   return(out_sf)
 }
 
+#' Read a geodatabase layer
+#'
+#' This is a helper function to read in a geodatabase layer to an sf object.
+#'
+#' @param gdbLayer String name of the layer to be read
+#' @param gdbPath file path of the geodatabase
+#' @return sf object
+get_gdb_layer <- function(gdbLayer, gdbPath) {
+  out_sf <- sf::st_read(gdbPath, stringsAsFactors = FALSE, layer = gdbLayer)
+  out_sf$geometry <- sf::st_geometry(out_sf)
+  return(out_sf)
+}
+
+#' Read an esri layer
+#'
+#' This is a helper function to read in a geodatabase layer to an sf object.
+#'
+#' @param esriUrl string url of the mapserver
+#' @param esriLayer String name of the layer to be read
+#' @param where where clause to filter feature rows
+#' @param geometry geometry_sf to filter feature rows
+#' @return sf object
+get_esri_layer <- function(esriLayer, esriUrl, where, geometry) {
+  mapserverUrl <- httr::parse_url(esriUrl)
+  mapserverUrl$path <- paste(mapserverUrl$path, esriLayer, "query", sep = "/")
+  if (is.null(geometry)) {
+    mapserverUrl$query <- list(where = where,
+                      outFields = "*",
+                      returnGeometry = "true",
+                      f = "geojson")
+  } else {
+    mapserverUrl$query <- list(geometry = geometry,
+                      where = where,
+                      outFields = "*",
+                      returnGeometry = "true",
+                      f = "geojson")
+  }
+
+  request <- httr::build_url(mapserverUrl)
+  out_sf <- sf::st_read(request)
+  return(out_sf)
+}
+
 
 #' Read an open data record
 #'
@@ -80,7 +121,7 @@ sf_clean <- function(in_sf, crop_sf, crs) {
 #' @param crs Coordinate reference system used for output sf
 #' @return An sf object
 #' @export
-get_shp_res <- function(resId, cropSf=NULL, crs=4326) {
+get_shp_res <- function(resId, crop_sf=NULL, crs=4326) {
   dataDir <- download_res(resId)
 
   shpFile <- list.files(dataDir, recursive=TRUE, pattern="\\.shp$",
@@ -94,10 +135,88 @@ get_shp_res <- function(resId, cropSf=NULL, crs=4326) {
     stop(paste("No Shapefile downloaded. Downloaded files are at: ", dataDir))
   }
   # cleanup
-  out_sf <- sf_clean(out_sf)
+  out_sf <- sf_clean(out_sf, crop_sf, crs)
   unlink(dataDir, recursive = TRUE)
   return(out_sf)
 }
+
+
+#' @describeIn getRes
+#'
+#' @param resId String of the resource id associated with the open data resource
+#' @param cropSf Sf object to crop the spatial data too
+#' @param crs Coordinate reference system used for output sf
+#' @param gdbLayer string name of layer to extract, if null all layers will be
+#' extracted
+#' @return A named list of sfs object, named according to layer
+#' @export
+get_gdb_res <- function(resId, crop_sf=NULL, crs=4326, gdbLayer=NULL) {
+  dataDir <- download_res(resId)
+
+  gdbDir <- list.files(tempDir, recursive=TRUE, pattern="\\.gdb$",
+                       include.dirs	= TRUE, full.names = TRUE)
+  if (length(gdbDir) > 0) {
+    tryCatch({
+      if (!is.null(gdbLayer)){
+        # download specific layer
+        out_sf <- sf::st_read(gdbDir, stringsAsFactors = FALSE, layer = gdbLayer)
+        out_sf$geometry <- sf::st_geometry(out_sf)
+        sfList <- list(gdbLayer=out_sf)
+      } else {
+        # download all layers into list
+        layerList <- sf::st_layers(gdbDir)[1]$name
+        sfList <- sapply(layerList, get_gdb_layer, gdbPath=gdbDir,
+                         simplify = FALSE,USE.NAMES = TRUE)
+      }
+    }, error = function(e) {stop(paste("Error reading geodatabase:"))})
+  } else {
+    stop(paste("No geodatabase downloaded. Downloaded files are at: ", dataDir))
+  }
+  # cleanup
+  sfList <- sapply(sfList, sf_clean, crop_sf=crop_sf, crs=crs, simplify=FALSE,
+                   USE.NAMES=TRUE)
+  return(sfList)
+}
+
+
+#' @describeIn getRes
+#'
+#' @param resId String of the resource id associated with the open data resource
+#' @param cropSf Sf object to crop the spatial data too
+#' @param crs Coordinate reference system used for output sf
+#' @param esriLayer String layer number of the layer to be extracted
+#' @param esriWhere where clause to filter esri results
+#' @return A  named list of sf objects, named according to their layer
+#' @export
+get_esri_res <- function(resId, crop_sf=NULL, crs=4326, esriLayer=NULL, esriWhere="1=1") {
+  ckanr::ckanr_setup(url="https://open.canada.ca/data")
+  tryCatch({res <- ckanr::resource_show(resId)}, error = function(e) {
+    warning(paste("Resource corresponding to that resId not found:", e))})
+  if (!is.null(layer)) {
+    sfList = list(esriLayer=get_esri_layer(esriLayer = esriLayer,
+                                           esriUrl = res$url,
+                                           where = esriWhere,
+                                           geometry = crop_sf))
+  } else {
+    # get layers, then extract:
+    mapServerUrl <- httr::parse_url(res$url)
+    mapServerUrl$path <- paste(mapServerUrl$path, "layers?f=json", sep = "/")
+    request <- httr::build_url(mapServerUrl)
+    layerIds <- jsonlite::fromJSON(request)$layers$id
+    layerIds <- sapply(layerIds, toString)
+
+    layerNames <- jsonlite::fromJSON(request)$layers$name
+
+    sfList <- lapply(layerIds, get_esri_layer, esriUrl=res$url,
+                     where=esriWhere, geometry=crop_sf)
+    names(sfList) <- layerNames
+  }
+  # cleanup
+  sfList <- sapply(sfList, sf_clean, crop_sf=crop_sf, crs=crs, simplify=FALSE,
+                   USE.NAMES=TRUE)
+  return(sfList)
+}
+
 
 
 # --------------download_extract_validate_sf-----------------
@@ -112,23 +231,12 @@ get_shp_res <- function(resId, cropSf=NULL, crs=4326) {
 #
 # Outputs:
 # 1 .out_sf: output sf object containing spatial data
-download_extract_validate_sf <- function(zipUrl, region_sf = NULL, gdbLayer = NULL, tifFile = NULL, returnRaster=FALSE) {
-  tempDir <- here::here("reports/temp")
-  temp <- file.path(tempDir, "temp.zip")
-
-  download.file(zipUrl, temp)
-  utils::unzip(temp, exdir = tempDir)
-  # if there's a shape file read that:
-  shpFile <- list.files(tempDir, recursive=TRUE, pattern="\\.shp$", full.names = TRUE)
-  gdbDir <- list.files(tempDir, recursive=TRUE, pattern="\\.gdb$",
-                       include.dirs	= TRUE, full.names = TRUE)
+download_extract_validate_sf <- function(zipUrl, region_sf = NULL,
+                                         gdbLayer = NULL, tifFile = NULL,
+                                         returnRaster=FALSE) {
+  if (FALSE) {
   tifRasterFile <- list.files(tempDir, recursive=TRUE, pattern = paste("\\",tifFile, "$", sep = ""),
                               include.dirs	= TRUE, full.names = TRUE)
-  if (length(shpFile) > 0) {
-    out_sf <- st_read(shpFile, stringsAsFactors = FALSE)
-  } else if (length(gdbDir) > 0) {
-    out_sf <- st_read(gdbDir, stringsAsFactors = FALSE, layer = gdbLayer)
-    out_sf$geometry <- st_geometry(out_sf)
   } else if (length(tifRasterFile) > 0) {
     tifRaster <- raster(tifRasterFile)
     if (returnRaster){
@@ -144,23 +252,6 @@ download_extract_validate_sf <- function(zipUrl, region_sf = NULL, gdbLayer = NU
     }
     out_sf <- stars::st_as_stars(tifRaster) %>% st_as_sf()
   }
-
-  if  (inherits(st_geometry(out_sf), "sfc_GEOMETRY")) {
-    out_sf <- st_cast(out_sf, "MULTIPOLYGON")
-  }
-  out_sf <- st_make_valid(out_sf)
-
-  if (!is.null(region_sf)) {
-    newRegion_sf <- sf::st_transform(region_sf, crs = sf::st_crs(out_sf))
-    out_sf <- sf::st_crop(out_sf, newRegion_sf)
-  }
-
-  out_sf <- sf::st_transform(out_sf, crs = 4326)
-
-  # cleanup
-  tempFiles <- list.files(tempDir, include.dirs = T, full.names = T, recursive = T)
-  unlink(tempFiles, recursive = TRUE)
-
-  return(out_sf)
 }
+
 

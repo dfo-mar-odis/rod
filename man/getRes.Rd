@@ -2,19 +2,42 @@
 % Please edit documentation in R/data_getters.R
 \name{get_shp_res}
 \alias{get_shp_res}
+\alias{get_gdb_res}
+\alias{get_esri_res}
 \title{Read an open data record}
 \usage{
-get_shp_res(resId, cropSf = NULL, crs = 4326)
+get_shp_res(resId, crop_sf = NULL, crs = 4326)
+
+get_gdb_res(resId, crop_sf = NULL, crs = 4326, gdbLayer = NULL)
+
+get_esri_res(
+  resId,
+  crop_sf = NULL,
+  crs = 4326,
+  esriLayer = NULL,
+  esriWhere = "1=1"
+)
 }
 \arguments{
 \item{resId}{String of the resource id associated with the open data resource}
 
-\item{cropSf}{Sf object to crop the spatial data too}
-
 \item{crs}{Coordinate reference system used for output sf}
+
+\item{gdbLayer}{string name of layer to extract, if null all layers will be
+extracted}
+
+\item{esriLayer}{String layer number of the layer to be extracted}
+
+\item{esriWhere}{where clause to filter esri results}
+
+\item{cropSf}{Sf object to crop the spatial data too}
 }
 \value{
 An sf object
+
+A named list of sfs object, named according to layer
+
+A  named list of sf objects, named according to their layer
 }
 \description{
 These functions download and import open data spatial data based on a
@@ -23,7 +46,11 @@ the option of cropping results to an input sf object.
 }
 \section{Functions}{
 \itemize{
-\item \code{get_shp_res}:
+\item \code{get_shp_res}: 
+
+\item \code{get_gdb_res}: 
+
+\item \code{get_esri_res}: 
 }}
 
 \section{After function section}{
