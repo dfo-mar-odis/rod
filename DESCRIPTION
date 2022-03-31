@@ -10,4 +10,4 @@ Description: Set of scripts used to help handle various spatial data
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-
+RoxygenNote: 7.1.2
