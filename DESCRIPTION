@@ -1,0 +1,20 @@
+Package: rod
+Type: Package
+Title: Open Data Utility Functions for R (Title Case)
+Version: 0.1.0
+Author: Quentin Stoyel
+Maintainer: Really? <yourself@somewhere.net>
+Description: Set of scripts used to help handle various spatial data
+    resources available on Open Data.  
+    Use four spaces when indenting paragraphs within the Description.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.2
+Imports: 
+    ckanr,
+    httr,
+    jsonlite,
+    magrittr,
+    sf,
+    stars
