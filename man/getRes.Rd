@@ -3,12 +3,18 @@
 \name{get_shp_res}
 \alias{get_shp_res}
 \alias{get_gdb_res}
+\alias{get_tif_res}
+\alias{get_data_res}
 \alias{get_esri_res}
 \title{Read an open data record}
 \usage{
 get_shp_res(resId, crop_sf = NULL, crs = 4326)
 
 get_gdb_res(resId, crop_sf = NULL, crs = 4326, gdbLayer = NULL)
+
+get_tif_res(resId, crop_sf = NULL, crs = 4326, tifFile = NULL, getSf = FALSE)
+
+get_data_res(resId, fileName = NULL, savePath = NULL)
 
 get_esri_res(
   resId,
@@ -21,21 +27,35 @@ get_esri_res(
 \arguments{
 \item{resId}{String of the resource id associated with the open data resource}
 
+\item{crop_sf}{Sf object to crop the spatial data too}
+
 \item{crs}{Coordinate reference system used for output sf}
 
 \item{gdbLayer}{string name of layer to extract, if null all layers will be
 extracted}
 
+\item{tifFile}{string name of tif file to be extracted}
+
+\item{getSf}{Boolean. If TRUE, function will return list of sf, may
+SIGNIFICANTLY increase processing time and resources. Default is FALSE}
+
+\item{fileName}{String name of file to save}
+
+\item{savePath}{Full Path file should be saved to.}
+
 \item{esriLayer}{String layer number of the layer to be extracted}
 
 \item{esriWhere}{where clause to filter esri results}
-
-\item{cropSf}{Sf object to crop the spatial data too}
 }
 \value{
 An sf object
 
 A named list of sfs object, named according to layer
+
+A named list of stars/sf objects depending on getSf flag, named
+according to filename.
+
+Directory containing the downloaded files.
 
 A  named list of sf objects, named according to their layer
 }
@@ -49,6 +69,10 @@ the option of cropping results to an input sf object.
 \item \code{get_shp_res}: 
 
 \item \code{get_gdb_res}: 
+
+\item \code{get_tif_res}: 
+
+\item \code{get_data_res}: 
 
 \item \code{get_esri_res}: 
 }}

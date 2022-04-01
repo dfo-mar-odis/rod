@@ -7,7 +7,11 @@
 sf_clean(in_sf, crop_sf, crs)
 }
 \arguments{
-\item{resId}{String of the resource id associated with the open data resource}
+\item{in_sf}{Sf object to be cleaned.}
+
+\item{crop_sf}{Sf object to crop the spatial data to}
+
+\item{crs}{Coordinate reference system used for output sf}
 }
 \value{
 File path of the directory
