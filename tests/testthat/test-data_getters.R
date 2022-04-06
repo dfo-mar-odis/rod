@@ -10,7 +10,6 @@ test_that("sf_clean crops and transforms", {
   expect_equal(sf::st_bbox(ncCropped_sf), sf::st_bbox(sf::st_bbox(head(nc_sf))))
 })
 
-
 test_that("download url", {
   zipFile <- "https://github.com/stoyelq/rod/raw/test-framwork/tests/testthat/testdata/testShp.zip"
   dataDir <- rod:::download_url(zipFile)
@@ -25,8 +24,8 @@ test_that("shp getter", {
 
 test_that("gdb getter", {
   gdbFile <- "https://github.com/stoyelq/rod/raw/test-framwork/tests/testthat/testdata/testGdb.zip"
-  out_sf <- rod:::get_gdb_res(gdbFile, crs=4326)
-  expect_equal(sf::st_crs(out_sf)$input, "EPSG:4326")
+  outSf_list<- rod:::get_gdb_res(gdbFile, crs=4326)
+  expect_equal(sf::st_crs(outSf_list[[1]])$input, "EPSG:4326")
 })
 
 test_that("csv getter", {
@@ -35,5 +34,8 @@ test_that("csv getter", {
   expect_gt(length(list.files(outDir)), 0)
 })
 
-
-
+test_that("tif getter", {
+  tifFile <- "https://github.com/stoyelq/rod/raw/test-framwork/tests/testthat/testdata/testTif.zip"
+  outTif_list <- rod:::get_tif_res(tifFile)
+  expect_gt(length(list.files(outDir)), 0)
+})
