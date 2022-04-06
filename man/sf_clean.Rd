@@ -27,5 +27,5 @@ and setting the crs.
 nc_sf <- sf::st_read(system.file("shape/nc.shp", package="sf"))
 # create a bounding box around the first few entries:
 nc_bbox <- sf::st_as_sfc(sf::st_bbox(head(nc_sf)))
-ncClean_sf <- rod::sf_clean(nc_sf, nc_bbox, crs=4326)
+ncClean_sf <- rod:::sf_clean(nc_sf, nc_bbox, crs=4326)
 }

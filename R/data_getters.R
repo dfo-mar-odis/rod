@@ -25,7 +25,8 @@
 #' @return File path of the directory
 #'
 #' @examples
-#' dataDir <- download_url("https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/physical/ne_110m_ocean.zip")
+#' dataDir <- rod:::download_url("https://github.com/stoyelq/rod/raw/main/tests/
+#' testthat/testdata/testShp.zip")
 #' list.files(dataDir)
 download_url <- function(resUrl) {
   dataDir <- file.path(tempdir(), "dataDir")
@@ -59,7 +60,7 @@ download_url <- function(resUrl) {
 #' nc_sf <- sf::st_read(system.file("shape/nc.shp", package="sf"))
 #' # create a bounding box around the first few entries:
 #' nc_bbox <- sf::st_as_sfc(sf::st_bbox(head(nc_sf)))
-#' ncClean_sf <- rod::sf_clean(nc_sf, nc_bbox, crs=4326)
+#' ncClean_sf <- rod:::sf_clean(nc_sf, nc_bbox, crs=4326)
 sf_clean <- function(in_sf, crop_sf=NULL, crs=NULL) {
   if  (inherits(sf::st_geometry(in_sf), "sfc_GEOMETRY")) {
     in_sf <- sf::st_cast(in_sf, "MULTIPOLYGON")
