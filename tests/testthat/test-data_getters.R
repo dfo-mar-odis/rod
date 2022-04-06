@@ -46,7 +46,8 @@ test_that("tif getter", {
 })
 
 test_that("esri getter", {
-  serverUrl <- "https://geoappext.nrcan.gc.ca/arcgis/rest/services/Energy/clean_energy_generating_stations_fgp/MapServer/"
+  serverUrl <- paste0("https://geoappext.nrcan.gc.ca/arcgis/rest/services/",
+  "Energy/clean_energy_generating_stations_fgp/MapServer/")
   outSf_list <- rod::get_esri_res(serverUrl)
   expect_equal(sf::st_crs(outSf_list[[1]])$input, "EPSG:4326")
 })

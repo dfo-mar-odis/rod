@@ -19,6 +19,7 @@ were downloaded into. The directory and downloaded data should be deleted
 using unlink().
 }
 \examples{
-dataDir <- download_url("https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/physical/ne_110m_ocean.zip")
+dataDir <- rod:::download_url("https://github.com/stoyelq/rod/raw/main/tests/
+testthat/testdata/testShp.zip")
 list.files(dataDir)
 }
