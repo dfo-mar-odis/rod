@@ -8,16 +8,16 @@
 \alias{get_esri_res}
 \title{Read an open data record}
 \usage{
-get_shp_res(resId, crop_sf = NULL, crs = 4326)
+get_shp_res(resUrl, crop_sf = NULL, crs = 4326)
 
-get_gdb_res(resId, crop_sf = NULL, crs = 4326, gdbLayer = NULL)
+get_gdb_res(resUrl, crop_sf = NULL, crs = 4326, gdbLayer = NULL)
 
-get_tif_res(resId, crop_sf = NULL, crs = 4326, tifFile = NULL, getSf = FALSE)
+get_tif_res(resUrl, crop_sf = NULL, crs = 4326, tifFile = NULL, getSf = FALSE)
 
-get_data_res(resId, fileName = NULL, savePath = NULL)
+get_data_res(resUrl, fileName = NULL, savePath = NULL)
 
 get_esri_res(
-  resId,
+  serverUrl,
   crop_sf = NULL,
   crs = 4326,
   esriLayer = NULL,
@@ -25,7 +25,7 @@ get_esri_res(
 )
 }
 \arguments{
-\item{resId}{String of the resource id associated with the open data resource}
+\item{resUrl}{Url of the resource to download}
 
 \item{crop_sf}{Sf object to crop the spatial data too}
 
@@ -42,6 +42,8 @@ SIGNIFICANTLY increase processing time and resources. Default is FALSE}
 \item{fileName}{String name of file to save}
 
 \item{savePath}{Full Path file should be saved to.}
+
+\item{serverUrl}{Url of the map server to query}
 
 \item{esriLayer}{String layer number of the layer to be extracted}
 
@@ -82,3 +84,9 @@ the option of cropping results to an input sf object.
 Maybe details here?
 }
 
+\examples{
+ckanr::ckanr_setup(url="https://open.canada.ca/data")
+#res <- ckanr::resource_show("some-resource-id-1234")
+#res_sf <- get_shp_res(res$url)
+
+}

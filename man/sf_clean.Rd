@@ -4,7 +4,7 @@
 \alias{sf_clean}
 \title{Performs cleaning of an sf object}
 \usage{
-sf_clean(in_sf, crop_sf, crs)
+sf_clean(in_sf, crop_sf = NULL, crs = NULL)
 }
 \arguments{
 \item{in_sf}{Sf object to be cleaned.}
@@ -21,4 +21,11 @@ This is a helper function to perform common cleaning operations on sf
 objects. These include setting the geometry type to multipolygon if there are
 multiple geometry types, running sf::st_make_valid, cropping to an sf if provided
 and setting the crs.
+}
+\examples{
+# load sample data from sf package:
+nc_sf <- sf::st_read(system.file("shape/nc.shp", package="sf"))
+# create a bounding box around the first few entries:
+nc_bbox <- sf::st_as_sfc(sf::st_bbox(head(nc_sf)))
+ncClean_sf <- rod::sf_clean(nc_sf, nc_bbox, crs=4326)
 }
