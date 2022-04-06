@@ -22,3 +22,9 @@ test_that("shp getter", {
   out_sf <- rod:::get_shp_res(shpFile, crs=4326)
   expect_equal(sf::st_crs(out_sf)$input, "EPSG:4326")
 })
+
+test_that("gdb getter", {
+  gdbFile <- "https://github.com/stoyelq/rod/tree/test-framwork/tests/testthat/testdata/test.gdb"
+  out_sf <- rod:::get_gdb_res(gdbFile, crs=4326)
+  expect_equal(sf::st_crs(out_sf)$input, "EPSG:4326")
+})
