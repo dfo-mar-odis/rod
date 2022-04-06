@@ -60,7 +60,6 @@ download_url <- function(resUrl) {
 #' # create a bounding box around the first few entries:
 #' nc_bbox <- sf::st_as_sfc(sf::st_bbox(head(nc_sf)))
 #' ncClean_sf <- rod::sf_clean(nc_sf, nc_bbox, crs=4326)
-#' @export
 sf_clean <- function(in_sf, crop_sf=NULL, crs=NULL) {
   if  (inherits(sf::st_geometry(in_sf), "sfc_GEOMETRY")) {
     in_sf <- sf::st_cast(in_sf, "MULTIPOLYGON")
