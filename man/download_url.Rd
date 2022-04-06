@@ -11,14 +11,14 @@ download_url(resUrl)
 }
 \value{
 File path of the directory
-
- @examples
-dataDir <- download_url("https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/physical/ne_110m_ocean.zip")
-list.files(dataDir)
 }
 \description{
 This is a helper function to download and unzip an open data resource into a
 temporary directory. It returns the path of the directory that the files
 were downloaded into. The directory and downloaded data should be deleted
 using unlink().
+}
+\examples{
+dataDir <- download_url("https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/physical/ne_110m_ocean.zip")
+list.files(dataDir)
 }
