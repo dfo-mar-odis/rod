@@ -16,6 +16,11 @@ test_that("download url", {
   testthat::expect_gt(length(list.files(dataDir)), 0)
 })
 
+test_that("trigger error on res not found", {
+  shpFile <- "https://github.com/stoyelq/rod/raw/test-framwork/tests/testthat/testdata/testShp.zip"
+  expect_error(rod:::get_gdb_res(shpFile, crs=4326))
+})
+
 test_that("shp getter", {
   shpFile <- "https://github.com/stoyelq/rod/raw/test-framwork/tests/testthat/testdata/testShp.zip"
   out_sf <- rod:::get_shp_res(shpFile, crs=4326)
@@ -37,5 +42,11 @@ test_that("csv getter", {
 test_that("tif getter", {
   tifFile <- "https://github.com/stoyelq/rod/raw/test-framwork/tests/testthat/testdata/testTif.zip"
   outTif_list <- rod:::get_tif_res(tifFile)
-  expect_gt(length(list.files(outDir)), 0)
+  expect_equal(sf::st_crs(outTif_list[[1]])$input, "EPSG:4326")
+})
+
+test_that("esri getter", {
+  serverUrl <- "https://geoappext.nrcan.gc.ca/arcgis/rest/services/Energy/clean_energy_generating_stations_fgp/MapServer/"
+  outSf_list <- rod::get_esri_res(serverUrl)
+  expect_equal(sf::st_crs(outSf_list[[1]])$input, "EPSG:4326")
 })
