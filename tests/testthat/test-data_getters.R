@@ -12,19 +12,28 @@ test_that("sf_clean crops and transforms", {
 
 
 test_that("download url", {
-  zipFile <- "https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/physical/ne_110m_ocean.zip"
+  zipFile <- "https://github.com/stoyelq/rod/raw/test-framwork/tests/testthat/testdata/testShp.zip"
   dataDir <- rod:::download_url(zipFile)
   testthat::expect_gt(length(list.files(dataDir)), 0)
 })
 
 test_that("shp getter", {
-  shpFile <- "https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/physical/ne_110m_ocean.zip"
+  shpFile <- "https://github.com/stoyelq/rod/raw/test-framwork/tests/testthat/testdata/testShp.zip"
   out_sf <- rod:::get_shp_res(shpFile, crs=4326)
   expect_equal(sf::st_crs(out_sf)$input, "EPSG:4326")
 })
 
 test_that("gdb getter", {
-  gdbFile <- "https://github.com/stoyelq/rod/tree/test-framwork/tests/testthat/testdata/test.gdb"
+  gdbFile <- "https://github.com/stoyelq/rod/raw/test-framwork/tests/testthat/testdata/testGdb.zip"
   out_sf <- rod:::get_gdb_res(gdbFile, crs=4326)
   expect_equal(sf::st_crs(out_sf)$input, "EPSG:4326")
 })
+
+test_that("csv getter", {
+  csvFile <- "https://github.com/stoyelq/rod/raw/test-framwork/tests/testthat/testdata/test.csv"
+  outDir <- rod:::get_data_res(csvFile)
+  expect_gt(length(list.files(outDir)), 0)
+})
+
+
+
