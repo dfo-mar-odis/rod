@@ -19,7 +19,7 @@ were downloaded into. The directory and downloaded data should be deleted
 using unlink().
 }
 \examples{
-dataDir <- rod:::download_url("https://github.com/stoyelq/rod/raw/main/tests/
-testthat/testdata/testShp.zip")
+dataDir <- rod:::download_url(paste0("https://github.com/stoyelq/rod/raw/main/tests/",
+"testthat/testdata/testShp.zip"))
 list.files(dataDir)
 }

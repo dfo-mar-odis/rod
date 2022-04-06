@@ -25,8 +25,8 @@
 #' @return File path of the directory
 #'
 #' @examples
-#' dataDir <- rod:::download_url("https://github.com/stoyelq/rod/raw/main/tests/
-#' testthat/testdata/testShp.zip")
+#' dataDir <- rod:::download_url(paste0("https://github.com/stoyelq/rod/raw/main/tests/",
+#' "testthat/testdata/testShp.zip"))
 #' list.files(dataDir)
 download_url <- function(resUrl) {
   dataDir <- file.path(tempdir(), "dataDir")
