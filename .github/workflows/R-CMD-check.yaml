@@ -41,18 +41,12 @@ jobs:
             remotes
             curl
 
-      - name: "[Stage] [Linux] Install required system libs"
+      - name: " Install required linux system libs for sf"
         if: runner.os == 'Linux'
-        run: sudo apt install libcurl4-openssl-dev libgit2-dev
-
-      # for some strange Windows reason this step and the next one need to be decoupled
-      - name: "[Stage] Prepare"
         run: |
-          Rscript -e "if (getRversion() < '3.2' && !requireNamespace('curl')) install.packages('curl', type = 'source')"
-
-      - name: "[Custom block] [Linux] Install spatial libraries"
-        if: runner.os == 'Linux'
-        run: sudo apt-get install libgdal-dev libproj-dev libgeos-dev libudunits2-dev
+          sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+          sudo apt-get update
+          sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev
 
       - name: Install R packages
         if: runner.os == 'Linux'
