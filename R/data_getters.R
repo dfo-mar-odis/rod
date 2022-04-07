@@ -141,7 +141,7 @@ get_esri_layer <- function(esriLayer, esriUrl, where, geometry) {
 
   request <- httr::build_url(mapserverUrl)
   warning(request)
-  out_sf <- sf::st_read(system.file("shape/nc.shp", package="sf"), stringsAsFactors = FALSE)
+  out_sf <- sf::st_read(request)
   return(out_sf)
 }
 
