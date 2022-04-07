@@ -44,10 +44,12 @@ jobs:
           extra-packages: rcmdcheck
 
       - name: Fix ubuntu packages
+        if: if: runner.os == 'Linux'
         run: |
           sudo apt install libcurl4-openssl-dev
 
       - name: Install R packages
+        if: if: runner.os == 'Linux'
         run: |
           install.packages(c("ckanr", "here"), quiet=TRUE)
         shell: Rscript {0}

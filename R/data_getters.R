@@ -141,9 +141,7 @@ get_esri_layer <- function(esriLayer, esriUrl, where, geometry) {
 
   request <- httr::build_url(mapserverUrl)
   warning(request)
-  out_sf <- sf::st_read(paste0("https://geoappext.nrcan.gc.ca/arcgis/rest/",
-  "services/Energy/clean_energy_generating_stations_fgp/MapServer//0/query?",
-  "where=1%3D1&outFields=%2A&returnGeometry=true&f=geojson"))
+  out_sf <- sf::st_read(system.file("shape/nc.shp", package="sf"), stringsAsFactors = FALSE)
   return(out_sf)
 }
 
