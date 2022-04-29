@@ -1,3 +1,4 @@
+
 test_that("sf_clean crops and transforms", {
   # load sample data from sf package:
   nc_sf <- sf::st_read(system.file("shape/nc.shp", package="sf"))
